@@ -1,1 +1,46 @@
 # portfolio-1-database-design
+Selected Case Study
+
+Organisation: Techsuite, an online store selling anti-blue light and photochromic glasses (my own business).
+
+Nature of the business/system: An e-commerce platform where customers browse glasses, choose a frame and lens type (anti-blue light or photochromic, with or without prescription), place orders, pay online, and track delivery.
+
+Users of the database:
+
+Customers (browse, order, review)
+Business owner/admin (manage products, stock, orders and deliveries)
+
+Major data to be stored:
+
+Customers, phone numbers and delivery addresses
+Product categories (e.g. anti-blue light glasses, photochromic glasses, accessories)
+Products (frames) and their variants (colour, size, lens type, price, stock per variant)
+Lens details (blue-light filter, photochromic tint, UV protection, prescription or non-prescription)
+Orders and order items
+Payments (card, bank transfer, pay on delivery)
+Deliveries and delivery status
+Product reviews and ratings
+
+Key operations the database will support:
+
+Add new glasses and update stock for each variant (colour, size, lens type)
+Place orders and reduce stock automatically
+Process payments and confirm orders
+Track delivery from processing to delivered
+Retrieve customer order history and reviews
+Generate sales reports (e.g. best-selling lens type, monthly revenue)
+Why this case study suits the portfolio
+Relational design: orders, customers, payments and stock need strict consistency (ACID transactions).
+Query optimisation: sales reports and product searches over thousands of orders benefit from indexing.
+NoSQL: glasses have varied attributes (photochromic tint and transition speed, blue-light filter percentage, frame size), which fit flexible documents.
+Distributed/cloud: an online store must stay available and handle traffic spikes (for example during promotions).
+Tools
+Relational database: MySQL 8
+NoSQL database: MongoDB (Portfolio 4)
+Version control: Git/GitHub
+Readme
+MD
+Uploads
+mit-8103-advanced-database-systems-ca-september-cohort-2026.pdf
+Memory
+Mit 8103 Portfolio, MIT 8103 Portfolio
