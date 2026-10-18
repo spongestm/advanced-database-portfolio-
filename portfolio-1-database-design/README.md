@@ -44,3 +44,31 @@ Uploads
 mit-8103-advanced-database-systems-ca-september-cohort-2026.pdf
 Memory
 Mit 8103 Portfolio, MIT 8103 Portfolio
+
+
+
+
+## Entities and Relationships
+
+| Entity | Purpose |
+|---|---|
+| customers | People who buy glasses |
+| categories | Product groups (anti-blue light, photochromic, accessories) |
+| products | A frame model (e.g. "Classic Round") |
+| product_variants | A specific colour, size and lens type with its own price and stock |
+| orders | A purchase made by a customer |
+| order_items | The variants and quantities inside an order |
+| payments | Payment for an order |
+| deliveries | Delivery tracking for an order |
+| reviews | Customer ratings of products |
+
+**Key relationships**
+- One customer places many orders
+- One order contains many order items
+- Each order item refers to one product variant
+- One category has many products; one product has many variants
+- One order has one payment and one delivery
+- A customer can review many products
+
+## ER Diagram
+![ER Diagram](er-diagram.png)
