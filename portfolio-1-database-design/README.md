@@ -72,3 +72,17 @@ Mit 8103 Portfolio, MIT 8103 Portfolio
 
 ## ER Diagram
 ![ER Diagram](er-diagram.png)
+
+
+## Keys and Constraints
+- **Primary keys:** every table uses an auto-increment integer ID.
+- **Foreign keys:** link orders to customers, order items to orders and
+  product variants, variants to products, and so on. They prevent orphan records.
+- **UNIQUE:** customer email and variant SKU cannot be duplicated;
+  payments and deliveries are one-to-one with orders.
+- **CHECK:** prevents negative prices or stock, restricts rating to 1-5,
+  restricts order status and lens type to valid values.
+- **unit_price in order_items:** copies the price at purchase time so later
+  price changes do not alter past orders.
+
+The full schema is in `schema.sql`.
