@@ -86,3 +86,50 @@ Mit 8103 Portfolio, MIT 8103 Portfolio
   price changes do not alter past orders.
 
 The full schema is in `schema.sql`.
+
+
+## Normalisation
+
+### Unnormalised design (problem)
+A single table `orders_flat(order_id, customer_name, customer_email,
+customer_phone, items, category, colour, size, lens_type, price,
+quantity, payment_method, delivery_status)` would cause:
+- **Redundancy:** customer and product details repeated on every order.
+- **Update anomaly:** changing a customer's email or a frame's price means
+  editing many rows.
+- **Insert anomaly:** a new frame cannot be added until someone orders it.
+- **Delete anomaly:** deleting an order could remove the only record of a
+  customer or product.
+
+### First Normal Form (1NF)
+Every column holds one atomic value and there are no repeating groups.
+Multiple glasses in one order (for example "Round-Black, Square-Blue" in one
+cell) were split so that each item is its own row in `order_items`.
+
+### Second Normal Form (2NF)
+The table is in 1NF and every non-key column depends on the whole key. In the
+items table the key is (order_id, variant_id), but colour, size, lens type
+and price depend only on the variant, not on the order. These columns were
+moved to `product_variants`.
+
+### Third Normal Form (3NF)
+The table is in 2NF and no non-key column depends on another non-key column.
+- Customer name, email and phone depend on the customer, not the order, so
+  they live in `customers`.
+- Category depends on the product, so it lives in `categories`, linked to
+  `products`.
+- Payment and delivery details depend on the order but describe different
+  things, so they are separate tables (`payments`, `deliveries`).
+
+### Result
+The final design has 9 tables in 3NF: customers, categories, products,
+product_variants, orders, order_items, payments, deliveries, reviews.
+Each fact is stored once, so updating a customer's email or a frame's price
+is a single-row change.
+
+### Deliberate denormalisation
+`order_items.unit_price` copies the variant price at the time of purchase,
+and `orders.total_amount` stores the order total. This breaks strict 3NF on
+purpose: if the price changes later, past orders must keep the price the
+customer actually paid, and the stored total avoids recalculating it on
+every report.
