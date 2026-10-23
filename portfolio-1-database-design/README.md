@@ -133,3 +133,20 @@ and `orders.total_amount` stores the order total. This breaks strict 3NF on
 purpose: if the price changes later, past orders must keep the price the
 customer actually paid, and the stored total avoids recalculating it on
 every report.
+
+
+## Implementation Evidence
+The schema was run on MySQL 8 using Docker (see `docker-compose.yml`).
+
+### Tables created
+![Tables](screenshots/01-show-tables.png)
+
+### Constraint testing
+Valid rows were inserted successfully. Invalid rows (unknown lens type,
+non-existent customer, negative stock) were rejected by the CHECK and
+FOREIGN KEY constraints, which confirms the design enforces data integrity.
+![Constraint tests](screenshots/02-constraints-test.png)
+
+### How to reproduce
+1. `docker compose up -d`
+2. `docker exec -i ecom_mysql mysql -uroot -proot123 ecommerce < portfolio-1-database-design/schema.sql`
