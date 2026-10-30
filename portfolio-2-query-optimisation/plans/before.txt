@@ -1,0 +1,48 @@
+query_name
+Q1 - Revenue by lens type
+*************************** 1. row ***************************
+EXPLAIN: -> Sort: revenue DESC  (actual time=2362..2362 rows=2 loops=1)
+    -> Table scan on <temporary>  (actual time=2362..2362 rows=2 loops=1)
+        -> Aggregate using temporary table  (actual time=2361..2361 rows=2 loops=1)
+            -> Nested loop inner join  (cost=270925 rows=358262) (actual time=0.83..1864 rows=320936 loops=1)
+                -> Nested loop inner join  (cost=145533 rows=358262) (actual time=0.82..1352 rows=320936 loops=1)
+                    -> Filter: (o.`status` <> 'CANCELLED')  (cost=20142 rows=179905) (actual time=0.784..118 rows=160468 loops=1)
+                        -> Covering index scan on o using idx_orders_cust_status  (cost=20142 rows=199894) (actual time=0.776..73.7 rows=200000 loops=1)
+                    -> Index lookup on oi using order_id (order_id=o.order_id)  (cost=0.498 rows=1.99) (actual time=0.00631..0.00735 rows=2 loops=160468)
+                -> Single-row index lookup on v using PRIMARY (variant_id=oi.variant_id)  (cost=0.25 rows=1) (actual time=0.00137..0.0014 rows=1 loops=320936)
+
+query_name
+Q2 - Paid orders in last 30 days
+*************************** 1. row ***************************
+EXPLAIN: -> Filter: ((orders.`status` = 'PAID') and (orders.order_date >= <cache>((now() - interval 30 day))))  (cost=18809 rows=6662) (actual time=0.796..164 rows=2843 loops=1)
+    -> Table scan on orders  (cost=18809 rows=199894) (actual time=0.749..118 rows=200000 loops=1)
+
+query_name
+Q3 - Top 10 customers by spend
+*************************** 1. row ***************************
+EXPLAIN: -> Limit: 10 row(s)  (actual time=649..649 rows=10 loops=1)
+    -> Sort: total_spent DESC, limit input to 10 row(s) per chunk  (actual time=649..649 rows=10 loops=1)
+        -> Table scan on <temporary>  (actual time=638..644 rows=10000 loops=1)
+            -> Aggregate using temporary table  (actual time=638..638 rows=10000 loops=1)
+                -> Nested loop inner join  (cost=25074 rows=188657) (actual time=0.192..265 rows=160468 loops=1)
+                    -> Table scan on c  (cost=1027 rows=10023) (actual time=0.145..6.25 rows=10000 loops=1)
+                    -> Filter: (o.`status` <> 'CANCELLED')  (cost=0.308 rows=18.8) (actual time=0.0157..0.024 rows=16 loops=10000)
+                        -> Covering index lookup on o using idx_orders_cust_status (customer_id=c.customer_id)  (cost=0.308 rows=20.9) (actual time=0.0134..0.0195 rows=20 loops=10000)
+
+query_name
+Q4 - Monthly revenue
+*************************** 1. row ***************************
+EXPLAIN: -> Sort: `month`  (actual time=626..626 rows=13 loops=1)
+    -> Table scan on <temporary>  (actual time=626..626 rows=13 loops=1)
+        -> Aggregate using temporary table  (actual time=626..626 rows=13 loops=1)
+            -> Filter: (orders.`status` in ('PAID','SHIPPED','DELIVERED'))  (cost=20142 rows=59968) (actual time=0.646..343 rows=120453 loops=1)
+                -> Table scan on orders  (cost=20142 rows=199894) (actual time=0.644..214 rows=200000 loops=1)
+
+query_name
+Q5 - Payments by method
+*************************** 1. row ***************************
+EXPLAIN: -> Table scan on <temporary>  (actual time=975..975 rows=3 loops=1)
+    -> Aggregate using temporary table  (actual time=975..975 rows=3 loops=1)
+        -> Filter: (payments.`status` = 'SUCCESS')  (cost=12175 rows=12055) (actual time=0.435..457 rows=120453 loops=1)
+            -> Table scan on payments  (cost=12175 rows=120547) (actual time=0.431..310 rows=120453 loops=1)
+
