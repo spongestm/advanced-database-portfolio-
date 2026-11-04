@@ -1,0 +1,50 @@
+===== 1. INSERT: products with flexible lens attributes =====
+===== 2. INSERT: orders with embedded items, payment and delivery =====
+===== 3. QUERY: photochromic glasses with a variant under 26000 =====
+[
+  {
+    name: 'Classic Round',
+    lens: {
+      tint: 'grey'
+    }
+  }
+]
+===== 4. QUERY: anti-blue light glasses filtering at least 40% =====
+[
+  {
+    name: 'Square Office',
+    lens: {
+      blue_light_filter_pct: 40
+    }
+  }
+]
+===== 5. AGGREGATION: revenue and units by lens type =====
+[
+  {
+    _id: 'PHOTOCHROMIC',
+    units: 2,
+    revenue: 55000
+  },
+  {
+    _id: 'ANTI_BLUE_LIGHT',
+    units: 2,
+    revenue: 36000
+  }
+]
+===== 6. AGGREGATION: average rating per frame =====
+[
+  {
+    _id: 'Square Office',
+    avg_rating: 4,
+    reviews: 1
+  },
+  {
+    _id: 'Classic Round',
+    avg_rating: 5,
+    reviews: 1
+  }
+]
+===== 7. INDEXING: generate 5,000 products, compare before/after =====
+BEFORE INDEX -> stage: COLLSCAN, docs examined: 5003, returned: 427, time ms: 5
+AFTER INDEX  -> plan: {"stage":"FETCH","inputStage":{"stage":"IXSCAN","keyPattern":{"lens.type":1,"variants.price":1},"indexName":"lens.type_1_variants.price_1","isMultiKey":true,"multiKeyPaths":{"lens.type":[],"variants.p
+AFTER INDEX  -> docs examined: 427, returned: 427, time ms: 3
